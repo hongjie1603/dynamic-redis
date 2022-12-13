@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -29,8 +30,10 @@ public class RedisDynamicRoutingConnectionFactory implements InitializingBean, D
     private final Map<String, RedisConnectionFactory> connectionFactoryMap = new ConcurrentHashMap<>();
     @Autowired
     private List<RedisDynamicConnectionFactoryProvider> providers;
-    private String primary = "master";
-    private Boolean strict = false;
+    @Value("${spring.redis.dynamic.primary:master}")
+    private String primary;
+    @Value("${spring.redis.dynamic.strict:false}")
+    private Boolean strict;
 
     public RedisConnectionFactory determineConnectionFactory() {
         String dsKey = RedisDynamicConnectionFactoryContextHolder.peek();
