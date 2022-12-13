@@ -1,0 +1,2 @@
+# reids动态数据源
+本框架可以实现redis多数据源动态切换，大体上参照dynamic-datasource来进行实现
