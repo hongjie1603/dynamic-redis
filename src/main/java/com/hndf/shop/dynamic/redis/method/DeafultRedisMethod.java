@@ -20,7 +20,7 @@ public class DeafultRedisMethod implements RedisMethod {
     public Object execute(CacheInterceptor.Context context) {
         Object result;
         //查询redis
-        RedisOpsHandle redisOpsHandle = RedisHandleFactory.getHandle(context.getHandleType());
+        RedisOpsHandle redisOpsHandle = RedisHandleFactory.getHandle(context.getHandleType().getSimpleName());
         result = redisOpsHandle.get(context);
         if (!Objects.isNull(result)) {
             return result;

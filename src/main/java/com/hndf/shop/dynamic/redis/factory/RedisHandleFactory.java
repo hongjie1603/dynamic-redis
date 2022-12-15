@@ -10,11 +10,11 @@ public class RedisHandleFactory {
     private final static Map<String, RedisOpsHandle> redisOpsHandleMap = new HashMap<>();
 
 
-    public static RedisOpsHandle getHandle(String type) {
-        return redisOpsHandleMap.get(type);
+    public static RedisOpsHandle getHandle(String name) {
+        return redisOpsHandleMap.get(name);
     }
 
-    public static void registry(RedisOpsHandle redisOpsHandle) {
-        redisOpsHandleMap.put(redisOpsHandle.getType(), redisOpsHandle);
+    public static void registry(String name, RedisOpsHandle redisOpsHandle) {
+        redisOpsHandleMap.put(name, redisOpsHandle);
     }
 }

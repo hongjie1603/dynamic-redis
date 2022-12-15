@@ -4,6 +4,7 @@ package com.hndf.shop.dynamic.redis.interceptor;
 import com.hndf.shop.dynamic.redis.annotation.Cache;
 import com.hndf.shop.dynamic.redis.factory.RedisMethodHandleFactory;
 import com.hndf.shop.dynamic.redis.method.RedisMethod;
+import com.hndf.shop.dynamic.redis.opshandle.RedisOpsHandle;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -54,9 +55,8 @@ public class CacheInterceptor {
         private final Type returnType;
         private final Integer rate;
         private final Long expiredTime;
-        private final String method;
         private final Boolean limit;
-        private final String handleType;
+        private final Class<? extends RedisOpsHandle> handleType;
         private final Boolean renewal;
         private final RedisMethod redisMethod;
         private final ProceedingJoinPoint pjp;
@@ -75,13 +75,11 @@ public class CacheInterceptor {
             this.rate = cache.limitRate();
             this.expiredTime = cache.expiredTime();
             this.handleType = cache.handleType();
-            this.method = cache.method();
             this.limit = cache.limit();
             this.renewal = cache.renewal();
-            Type returnType = method.getGenericReturnType();
-            this.returnType = returnType;
-            this.redisMethod = RedisMethodHandleFactory.getRedisMethod(cache.limit() ? cache.limitMethod() : cache.method());
-            this.pjp = pjp;
+            this.returnType = method.getGenericReturnType();
+            this.redisMethod = RedisMethodHandleFactory.getRedisMethod(cache.limit() ? cache.limitMethod().getSimpleName() : cache.method().getSimpleName());
+             this.pjp = pjp;
         }
 
 

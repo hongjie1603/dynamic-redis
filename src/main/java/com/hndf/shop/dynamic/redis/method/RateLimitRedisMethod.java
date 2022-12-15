@@ -30,7 +30,7 @@ public class RateLimitRedisMethod implements RedisLimitMethod {
     public Object execute(CacheInterceptor.Context context) {
         try {
             //查询redis
-            RedisOpsHandle redisOpsHandle = RedisHandleFactory.getHandle(context.getHandleType());
+            RedisOpsHandle redisOpsHandle = RedisHandleFactory.getHandle(context.getHandleType().getSimpleName());
             Object result;
             result = redisOpsHandle.get(context);
             if (!Objects.isNull(result)) {

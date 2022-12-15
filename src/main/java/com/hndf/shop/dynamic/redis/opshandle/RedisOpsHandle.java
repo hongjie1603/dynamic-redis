@@ -15,13 +15,9 @@ public interface RedisOpsHandle extends InitializingBean {
 
     boolean delete(String... key);
 
-    default String getType() {
-        return this.getClass().getSimpleName();
-    }
-
     @Override
     default void afterPropertiesSet() {
-        RedisHandleFactory.registry(this);
+        RedisHandleFactory.registry(this.getClass().getSimpleName(), this);
     }
 
 

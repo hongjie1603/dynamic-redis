@@ -84,7 +84,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
     @Autowired
     private StringRedisTemplate redisTemplate;
-  
+
     @RDS("slave1")
     @GetMapping("/slave1")
     public void test(){
@@ -113,7 +113,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
     @Autowired
     private StringRedisTemplate redisTemplate;
- 
+
     @GetMapping("/slave1")
     public void test(){
         //切换数据源
@@ -135,23 +135,23 @@ public class DynamicDatasourceClearInterceptor implements HandlerInterceptor {
 ```java
 @Override
 public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    return true;
-}
+        return true;
+        }
 
 @Override
 public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-}
+        }
 
 @Override
 public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-    RedisDynamicConnectionFactoryContextHolder.clear();
-}
-}
+        RedisDynamicConnectionFactoryContextHolder.clear();
+        }
+        }
 ```
 
 ## 注意事项
 
-目前只对多个单机部署的redis进行了简单的动态切换测试，redis集群、主从等模式还没有进行测试，另外事务、消息订阅等功能也没有进行测试
+目前只测试了数据源之间的切换，事务、消息订阅等功能还没有测试
 
 # Cache注解生成缓存
 
@@ -185,3 +185,59 @@ public class Controller {
 | key1   | String | 否       | ""     | 支持spel表达式，该属性的值会替换prefix里的占位符，如果有多个占位符，可以使用逗号进行分割 |
 | key2   | String | 否       | ""     | 数据类型为hash、bigmap等时使用 支持spel表达式                |
 | ...    | ...    | 否       | ...    | 其他的参考属性参考@Cache类                                   |
+
+## 自定义缓存逻辑
+
+如果自定义缓存逻辑，例如我们想要在重建缓存的时候加上限流的逻辑。
+
+### 1.实现RedisMethod接口，并且将其注入到spring中
+
+```java
+@Component
+@Slf4j
+public class RateLimitRedisMethod implements RedisLimitMethod {
+    @SneakyThrows
+    @Override
+    public Object execute(CacheInterceptor.Context context) {
+       try {
+            //查询redis
+            RedisOpsHandle redisOpsHandle =                   RedisHandleFactory.getHandle(context.getHandleType().getSimpleName());
+            Object result;
+            result = redisOpsHandle.get(context);
+            if (!Objects.isNull(result)) {
+                return result;
+            }
+
+            //获取锁
+            threadLocal.set(context.getRate());
+            RateLimiter rateLimiter = loadingCache.get(context.getKey1());
+            boolean tryAcquire = rateLimiter.tryAcquire(2, TimeUnit.SECONDS);
+            if (!tryAcquire)
+                return null;
+            //DCL
+            result = redisOpsHandle.get(context);
+            if (!Objects.isNull(result)) {
+                return result;
+            }
+            result = context.getPjp().proceed();
+            redisOpsHandle.set(result, context.getExpiredTime(), context.getKey1(), context.getKey2());
+            return result;
+        } finally {
+            threadLocal.remove();
+        }
+    }
+
+}
+```
+
+### 2.通过注解的method属性指定该类
+
+```java
+@GetMapping("/slave2")
+@Cache(prefix = "user_?",key1 = "#userId",key2 = "1", method = RedisLimitMethod.class)
+@RDS("slave")
+public String test2(String userId){
+    return redisTemplate.opsForValue().get("slave");
+}
+```
+
