@@ -30,7 +30,6 @@ import java.lang.reflect.Type;
  * 缓存中间件
  */
 @Slf4j
-@Component
 @Aspect
 public class CacheInterceptor {
 
@@ -42,8 +41,7 @@ public class CacheInterceptor {
     public Object handlerControllerMethod(ProceedingJoinPoint pjp) {
         Context context = new Context(pjp);
         RedisMethod redisMethod = context.getRedisMethod();
-        Object result = redisMethod.execute(context);
-        return result;
+        return redisMethod.execute(context);
     }
 
 

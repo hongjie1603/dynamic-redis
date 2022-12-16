@@ -1,6 +1,7 @@
 package com.hndf.shop.dynamic.redis.config;
 
 import com.hndf.shop.dynamic.redis.RedisDynamicRoutingConnectionFactory;
+import com.hndf.shop.dynamic.redis.interceptor.RDSInterceptor;
 import com.hndf.shop.dynamic.redis.provider.RedisDynamicConnectionFactoryProvider;
 import com.hndf.shop.dynamic.redis.provider.YmlRedisDynamicConnectionFactoryProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,8 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(RedisDynamicProperties.class)
-@Import({RedisDynamicRoutingConnectionFactory.class})
-@ConditionalOnProperty(prefix = RedisDynamicProperties.PREFIX, name = "enabled", havingValue = "true")
+@Import({RedisDynamicRoutingConnectionFactory.class, RedisDynamicConnectionFactoryCreatorAutoConfiguration.class})
+@ConditionalOnProperty(prefix = RedisDynamicProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass(RedisConnectionFactory.class)
 public class RedisDynamicConnectionFactoryAutoConfiguration {
     private final RedisDynamicProperties properties;
@@ -30,8 +31,13 @@ public class RedisDynamicConnectionFactoryAutoConfiguration {
     }
 
     @Bean
-    public RedisDynamicConnectionFactoryProvider YmlDynamicDataSourceProvider() {
+    public RedisDynamicConnectionFactoryProvider ymlRedisDynamicConnectionFactoryProvider() {
         return new YmlRedisDynamicConnectionFactoryProvider(properties.getDatasource());
+    }
+
+    @Bean
+    public RDSInterceptor RDSInterceptor(){
+        return new RDSInterceptor();
     }
 
 

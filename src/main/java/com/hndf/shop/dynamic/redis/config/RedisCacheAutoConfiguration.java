@@ -1,22 +1,16 @@
 package com.hndf.shop.dynamic.redis.config;
 
+import com.hndf.shop.dynamic.redis.interceptor.CacheInterceptor;
 import com.hndf.shop.dynamic.redis.method.DeafultRedisMethod;
 import com.hndf.shop.dynamic.redis.method.RedisMethod;
 import com.hndf.shop.dynamic.redis.opshandle.RedisOpsHandle;
 import com.hndf.shop.dynamic.redis.opshandle.RedisOpsHashHandle;
 import com.hndf.shop.dynamic.redis.opshandle.RedisOpsStringHandle;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternUtils;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -44,5 +38,10 @@ public class RedisCacheAutoConfiguration {
         return new DeafultRedisMethod();
     }
 
+    @Bean
+    @Qualifier("hndfCacheInterceptor")
+    public CacheInterceptor cacheInterceptor(){
+        return new CacheInterceptor();
+    }
 
 }

@@ -24,10 +24,10 @@ public class RedisDynamicConnectionFactoryCreatorAutoConfiguration {
     @Primary
     @Bean
     @ConditionalOnMissingBean
-    public DefaulRedisConnectionFactoryCreator dataSourceCreator(List<ConnectionFactoryCreator> connectionFactoryCreators) {
-        DefaulRedisConnectionFactoryCreator defaultDataSourceCreator = new DefaulRedisConnectionFactoryCreator();
-        defaultDataSourceCreator.setCreators(connectionFactoryCreators);
-        return defaultDataSourceCreator;
+    public DefaulRedisConnectionFactoryCreator redisConnectionFactoryCreator(List<ConnectionFactoryCreator> connectionFactoryCreators) {
+        DefaulRedisConnectionFactoryCreator defaulRedisConnectionFactoryCreator = new DefaulRedisConnectionFactoryCreator();
+        defaulRedisConnectionFactoryCreator.setCreators(connectionFactoryCreators);
+        return defaulRedisConnectionFactoryCreator;
     }
 
 

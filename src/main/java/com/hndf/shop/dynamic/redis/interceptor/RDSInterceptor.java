@@ -14,7 +14,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 @Aspect
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RDSInterceptor {

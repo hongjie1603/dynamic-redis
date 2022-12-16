@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.hndf.shop.dynamic.redis.config.RedisDynamicConnectionFactoryAutoConfiguration,\
+com.hndf.shop.dynamic.redis.config.RedisCacheAutoConfiguration
