@@ -2,6 +2,7 @@ package com.hndf.shop.dynamic.redis.config;
 
 import com.hndf.shop.dynamic.redis.interceptor.CacheInterceptor;
 import com.hndf.shop.dynamic.redis.method.DeafultRedisMethod;
+import com.hndf.shop.dynamic.redis.method.RateLimitRedisMethod;
 import com.hndf.shop.dynamic.redis.method.RedisMethod;
 import com.hndf.shop.dynamic.redis.opshandle.RedisOpsHandle;
 import com.hndf.shop.dynamic.redis.opshandle.RedisOpsHashHandle;
@@ -33,9 +34,13 @@ public class RedisCacheAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
     public RedisMethod deafultRedisMethod() {
         return new DeafultRedisMethod();
+    }
+
+    @Bean
+    public RedisMethod rateLimitRedisMethod() {
+        return new RateLimitRedisMethod();
     }
 
     @Bean

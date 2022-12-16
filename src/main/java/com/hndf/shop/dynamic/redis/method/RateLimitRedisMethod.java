@@ -8,12 +8,10 @@ import com.hndf.shop.dynamic.redis.interceptor.CacheInterceptor;
 import com.hndf.shop.dynamic.redis.opshandle.RedisOpsHandle;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-@Component
 @Slf4j
 public class RateLimitRedisMethod implements RedisLimitMethod {
 
