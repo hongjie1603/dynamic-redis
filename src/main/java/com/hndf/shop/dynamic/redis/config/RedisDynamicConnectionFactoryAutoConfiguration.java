@@ -21,7 +21,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 @Configuration
 @EnableConfigurationProperties(RedisDynamicProperties.class)
 @Import({RedisDynamicRoutingConnectionFactory.class, RedisDynamicConnectionFactoryCreatorAutoConfiguration.class})
-@ConditionalOnProperty(prefix = RedisDynamicProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = RedisDynamicProperties.PREFIX, name = "enabled", havingValue = "true")
 @ConditionalOnClass(RedisConnectionFactory.class)
 public class RedisDynamicConnectionFactoryAutoConfiguration {
     private final RedisDynamicProperties properties;
