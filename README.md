@@ -1,5 +1,5 @@
 # 简介
-
+dynamic-redis借鉴了dynamic-datasource
 dynamic-redis 目前有2个功能
 
 1.动态切换redis数据源
